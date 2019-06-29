@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"strings"
 	"syscall" //only for Exec
 
 	"github.com/opencontainers/runc/libcontainer/apparmor"
@@ -208,7 +209,7 @@ func (l *linuxStandardInit) Init() error {
 		}
 	}
 	if err := syscall.Exec(name, l.config.Args[0:], os.Environ()); err != nil {
-		return newSystemErrorWithCause(err, "exec user process")
+		return newSystemErrorWithCause(err, "exec user process ['" + strings.Join(l.config.Args[0:], "', '") + "']")
 	}
 	return nil
 }
